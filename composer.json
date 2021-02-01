@@ -3,7 +3,12 @@
     "description": "Billing",
     "type": "library",
     "require": {
-        "php": "^7.4|^8.0"
+        "php": "^7.4|^8.0",
+        "moneyphp/money": "^3.3",
+        "yiisoft/active-record": "3.0.x-dev",
+        "yiisoft/db": "3.0.x-dev",
+        "yiisoft/yii-console": "3.0.x-dev",
+        "yiisoft/yii-db-migration": "1.0.x-dev"
     },
     "require-dev": {
         "infection/infection": "^0.21.0",
@@ -13,10 +18,13 @@
     },
     "autoload": {
         "psr-4": {
+            "YiiSoft\\Billing\\": "core",
             "YiiSoft\\Billing\\ActiveRecord\\": "src",
             "YiiSoft\\Billing\\ActiveRecord\\Test\\": "tests"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
         "sort-packages": true
     }
