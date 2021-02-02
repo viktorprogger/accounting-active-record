@@ -15,7 +15,7 @@ use YiiSoft\Billing\ActiveRecord\Record\TransactionEntryRecord;
 use YiiSoft\Billing\Entity\Account;
 use YiiSoft\Billing\Entity\Read\Operation as OperationRead;
 use YiiSoft\Billing\Entity\Transaction;
-use YiiSoft\Billing\Entity\Write\Operation;
+use YiiSoft\Billing\Entity\Write\Operation as OperationWrite;
 use YiiSoft\Billing\Repository\AccountRepository;
 use YiiSoft\Billing\Repository\OperationRepositoryInterface;
 use Yiisoft\Db\Connection\Connection;
@@ -36,7 +36,7 @@ class OperationRepository implements OperationRepositoryInterface
         $this->connection = $connection;
     }
 
-    public function perform(Operation $operation): OperationRead
+    public function perform(OperationWrite $operation): OperationRead
     {
         if (count($operation->getTransactions()) === 0) {
             throw new InvalidArgumentException('Transaction list is empty');
@@ -92,7 +92,7 @@ class OperationRepository implements OperationRepositoryInterface
     }
 
     // TODO Move this method to the core library as a standalone service
-    private function checkOutOfFunds(Operation $operation): void
+    private function checkOutOfFunds(OperationWrite $operation): void
     {
         /** @var Money[][] $amounts */
         $payers = $amounts = [];
