@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace YiiSoft\Billing\ActiveRecord\Record;
 
-use DateTime;
 use Yiisoft\ActiveRecord\ActiveRecord;
 
 /**
  * @property int $id
- * @property int $accountId
+ * @property string $accountId
  * @property int $amount
  * @property string $currency
- * @property DateTime $createdAt
+ * @property int $createdAt
+ * @property string $operationId
  */
-class TransactionEntry extends ActiveRecord
+final class TransactionEntryRecord extends ActiveRecord
 {
     public function tableName(): string
     {

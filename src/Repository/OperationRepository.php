@@ -10,7 +10,8 @@ use Money\Money;
 use RuntimeException;
 use Throwable;
 use Yiisoft\ActiveRecord\ActiveRecordFactory;
-use YiiSoft\Billing\ActiveRecord\Record\TransactionEntry;
+use YiiSoft\Billing\ActiveRecord\Record\OperationRecord;
+use YiiSoft\Billing\ActiveRecord\Record\TransactionEntryRecord;
 use YiiSoft\Billing\Entity\Account;
 use YiiSoft\Billing\Entity\Read\Operation as OperationRead;
 use YiiSoft\Billing\Entity\Transaction;
@@ -18,13 +19,12 @@ use YiiSoft\Billing\Entity\Write\Operation;
 use YiiSoft\Billing\Repository\AccountRepository;
 use YiiSoft\Billing\Repository\OperationRepositoryInterface;
 use Yiisoft\Db\Connection\Connection;
-use Yiisoft\Db\Connection\ConnectionInterface;
 
 class OperationRepository implements OperationRepositoryInterface
 {
     private AccountRepository $accountRepository;
     private ActiveRecordFactory $factory;
-    private ConnectionInterface $connection;
+    private Connection $connection;
 
     public function __construct(
         AccountRepository $accountRepository,
@@ -43,18 +43,34 @@ class OperationRepository implements OperationRepositoryInterface
         }
 
         $dbTransaction = $this->connection->beginTransaction();
+        $operationTime = new DateTimeImmutable();
 
         try {
             $this->checkOutOfFunds($operation);
 
-            // TODO Create operation record here to set its id to transactions
+            /** @var OperationRecord $operationRecord */
+            $operationRecord = $this->factory->createAR(OperationRecord::class);
+            $operationRecord->createdAt = $operationTime->getTimestamp();
+            if (!$operationRecord->save()) {
+                throw new RuntimeException('Cannot persist transaction');
+            }
+            $operationId = (string) $operationRecord->id;
 
             $transactions = [];
-            $operationTime = new DateTimeImmutable();
 
             foreach ($operation->getTransactions() as $transaction) {
-                $recordPayer = $this->createTransactionEntry($operationTime, $transaction);
-                $recordRecipient = $this->createTransactionEntry($operationTime, $transaction);
+                $recordPayer = $this->createTransactionEntry(
+                    $operationTime,
+                    $transaction->getFunds(),
+                    $transaction->getPayer(),
+                    $operationId
+                );
+                $recordRecipient = $this->createTransactionEntry(
+                    $operationTime,
+                    $transaction->getFunds(),
+                    $transaction->getRecipient(),
+                    $operationId
+                );
 
                 $transactions[] = new Transaction(
                     $transaction->getFunds(),
@@ -65,7 +81,9 @@ class OperationRepository implements OperationRepositoryInterface
                 );
             }
 
-            // TODO commit transaction and return
+            $dbTransaction->commit();
+
+            return new OperationRead($operationId, ...$transactions);
         } catch (Throwable $exception) {
             $dbTransaction->rollBack();
 
@@ -73,6 +91,7 @@ class OperationRepository implements OperationRepositoryInterface
         }
     }
 
+    // TODO Move this method to the core library as a standalone service
     private function checkOutOfFunds(Operation $operation): void
     {
         /** @var Money[][] $amounts */
@@ -110,15 +129,16 @@ class OperationRepository implements OperationRepositoryInterface
         Money $funds,
         Account $account,
         string $operationId
-    ): TransactionEntry {
-        /** @var TransactionEntry $record */
-        $record = $this->factory->createAR(TransactionEntry::class);
-        $record->createdAt = $operationTime;
+    ): TransactionEntryRecord {
+        /** @var TransactionEntryRecord $record */
+        $record = $this->factory->createAR(TransactionEntryRecord::class);
+        $record->createdAt = $operationTime->getTimestamp();
         $record->currency = $funds->getCurrency()->getCode();
         $record->amount = (int) $funds->getAmount();
         $record->accountId = $account->getId();
+        $record->operationId = $operationId;
 
-        if ($record->save()) {
+        if (!$record->save()) {
             throw new RuntimeException('Cannot persist transaction');
         }
 

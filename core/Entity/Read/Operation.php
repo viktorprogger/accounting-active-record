@@ -8,14 +8,21 @@ use YiiSoft\Billing\Entity\Transaction;
 
 final class Operation
 {
+    private string $id;
     /**
      * @var Transaction[]
      */
     private array $transactions;
 
-    public function __construct(Transaction ...$transactions)
+    public function __construct(string $id, Transaction ...$transactions)
     {
+        $this->id = $id;
         $this->transactions = $transactions;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     /**
