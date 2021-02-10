@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YiiSoft\Billing\ActiveRecord\Repository;
+namespace Bookkeeper\Accounting\ActiveRecord\Repository;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
@@ -10,14 +10,14 @@ use Money\Money;
 use RuntimeException;
 use Throwable;
 use Yiisoft\ActiveRecord\ActiveRecordFactory;
-use YiiSoft\Billing\ActiveRecord\Record\OperationRecord;
-use YiiSoft\Billing\ActiveRecord\Record\TransactionEntryRecord;
-use YiiSoft\Billing\Entity\Account;
-use YiiSoft\Billing\Entity\Read\Operation as OperationRead;
-use YiiSoft\Billing\Entity\Transaction;
-use YiiSoft\Billing\Entity\Write\Operation as OperationWrite;
-use YiiSoft\Billing\Repository\AccountRepository;
-use YiiSoft\Billing\Repository\OperationRepositoryInterface;
+use Bookkeeper\Accounting\ActiveRecord\Record\OperationRecord;
+use Bookkeeper\Accounting\ActiveRecord\Record\TransactionEntryRecord;
+use Bookkeeper\Accounting\Entity\Account;
+use Bookkeeper\Accounting\Entity\Read\Operation as OperationRead;
+use Bookkeeper\Accounting\Entity\Transaction;
+use Bookkeeper\Accounting\Entity\Write\Operation as OperationWrite;
+use Bookkeeper\Accounting\Repository\AccountRepository;
+use Bookkeeper\Accounting\Repository\OperationRepositoryInterface;
 use Yiisoft\Db\Connection\Connection;
 
 class OperationRepository implements OperationRepositoryInterface

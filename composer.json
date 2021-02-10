@@ -1,6 +1,6 @@
 {
-    "name": "yiisoft/billing",
-    "description": "Billing",
+    "name": "php-bookkeeper/accounting",
+    "description": "Accounting through ActiveRecord",
     "type": "library",
     "require": {
         "php": "^7.4|^8.0",
@@ -18,9 +18,8 @@
     },
     "autoload": {
         "psr-4": {
-            "YiiSoft\\Billing\\": "core",
-            "YiiSoft\\Billing\\ActiveRecord\\": "src",
-            "YiiSoft\\Billing\\ActiveRecord\\Test\\": "tests"
+            "Bookkeeper\\Accounting\\ActiveRecord\\": "src",
+            "Bookkeeper\\Accounting\\ActiveRecord\\Test\\": "tests"
         }
     },
     "minimum-stability": "dev",

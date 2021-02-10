@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YiiSoft\Billing\ActiveRecord\Record;
+namespace Bookkeeper\Accounting\ActiveRecord\Record;
 
 use Yiisoft\ActiveRecord\ActiveRecord;
 
