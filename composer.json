@@ -4,7 +4,9 @@
     "type": "library",
     "require": {
         "php": "^7.4|^8.0",
+
         "moneyphp/money": "^3.3",
+        "php-bookkeeper/accounting": "dev-master",
         "yiisoft/active-record": "3.0.x-dev",
         "yiisoft/db": "3.0.x-dev",
         "yiisoft/yii-console": "3.0.x-dev",
