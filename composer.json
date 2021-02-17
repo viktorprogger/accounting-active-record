@@ -1,5 +1,5 @@
 {
-    "name": "php-bookkeeper/accounting",
+    "name": "php-bookkeeper/accounting-active-record",
     "description": "Accounting through ActiveRecord",
     "type": "library",
     "require": {
